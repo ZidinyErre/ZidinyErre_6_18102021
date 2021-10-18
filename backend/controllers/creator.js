@@ -30,7 +30,7 @@ Creator.findOne({email: req.body.email})
         res.status(200).json({
           userId: creator._id,
           token: jwt.sign(
-            { userId: user._id },
+            { userId: creator._id },
             'RANDOM_TOKEN_SECRET',
             { expiresIn: '24h' }
           )
