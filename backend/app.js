@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const app = express();
+const path = require('path');
 
 const userRoutes = require('./routes/user');
+const saucesRoutes = require('./routes/sauces');
 
 mongoose.connect('mongodb+srv://BruceWillis:billyboY44@thecluster.caibu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
     { useNewUrlParser: true,
@@ -22,6 +24,10 @@ app.use((req, res, next) => {
 app.use(express.urlencoded({ extended : true}));
 app.use(express.json());
 
-  app.use('/api/auth', userRoutes);
+app.use('/images', express.static(path.join(__dirname, 'images')));
+
+app.use('/api/auth', userRoutes);
+app.use('/api/auth', saucesRoutes);
+
 
 module.exports = app;
