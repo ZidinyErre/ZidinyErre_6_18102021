@@ -2,19 +2,19 @@ const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
 
-exports.getAllSauce = (req, res) => {
+exports.getAllSauce = (req, res, next) => {
     Sauce.find()
     .then(sauces => res.status(200).json(sauces))
     .catch(error => res.status(400).json({error}));
 };
 
-exports.getOneSauce = (req, res) => {
+exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({_id : req.params.id})
     .then(sauces => res.status(200).json(sauces))
     .catch(error => res.status(404).json({error}));
 };
 
-exports.createSauce = (req, res) => {
+exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauces);
     delete sauceObject._id;
     const sauce = new Sauce({
@@ -26,7 +26,7 @@ exports.createSauce = (req, res) => {
     .catch(error => res.status(400).json({error}));
 };
 
-exports.modifySauce = (req, res) => {
+exports.modifySauce = (req, res, next) => {
     const sauceObject = req.file ?
     {
         ...JSON.parse(req.body.sauces),
@@ -38,7 +38,7 @@ exports.modifySauce = (req, res) => {
 
 };
 
-exports.deleteSauce = (req, res) => {
+exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
         const filename = sauce.imageUrl.split('/images/')[1];
