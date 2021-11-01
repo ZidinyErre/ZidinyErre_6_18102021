@@ -10,8 +10,8 @@ const sauceSchema = mongoose.Schema({
     likes : {type: Number , require : true},
     dislikes : {type: Number , require : true},
     usersLiked: {type: Array, default : [] },
-    usersDisliked: {type: Array, default : [] }
+    usersDisliked: {type: Array, default : [] },
 
 });
 
-module.exports = mongoose.model('sauce' , sauceSchema);
+module.exports = mongoose.model('Sauce' , sauceSchema);
