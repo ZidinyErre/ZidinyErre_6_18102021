@@ -5,13 +5,13 @@ const fs = require('fs');
 exports.getAllSauce = (req, res, next) => {
     Sauce.find()
     .then(sauces => res.status(200).json(sauces))
-    .catch(error => res.status(400).json({error}));
+    .catch(error => res.status(400).json({error: 'Sauces non trouvé !'}));
 };
 
 exports.getOneSauce = (req, res, next) => {
     Sauce.findOne({_id : req.params.id})
     .then(sauces => res.status(200).json(sauces))
-    .catch(error => res.status(404).json({error}));
+    .catch(error => res.status(404).json({error: 'Sauce non trouvé !'}));
 };
 
 exports.createSauce = (req, res, next) => {
@@ -27,7 +27,7 @@ exports.createSauce = (req, res, next) => {
     });
     sauce.save()
     .then(() => res.status(201).json({message : 'Objet enregistré !'}))
-    .catch(error => res.status(400).json({error}));
+    .catch(error => res.status(400).json({error: 'Objet non enregistré !'}));
 };
 
 exports.modifySauce = (req, res, next) => {
@@ -38,7 +38,7 @@ exports.modifySauce = (req, res, next) => {
     } : { ...req.body};
     Sauce.updateOne({_id: req.params.id},{ ...sauceObject, _id: req.params.id})
     .then(() => res.status(200).json({message : 'Objet modifié !'}))
-    .catch(error => res.status(400).json({error}));
+    .catch(error => res.status(400).json({error: 'Objet non modifié !'}));
 
 };
 
@@ -49,14 +49,13 @@ exports.deleteSauce = (req, res, next) => {
         fs.unlink(`images/${filename}`, () => {
             Sauce.deleteOne({ _id: req.params.id })
             .then(() => res.status(200).json({ message: 'Objet supprimé !'}))
-            .catch(error => res.status(400).json({ error }));
+            .catch(error => res.status(400).json({ error: 'Objet non supprimé !' }));
         });
       })
-    .catch(error => res.status(500).json({ error }));
+    .catch(error => res.status(500).json({ error: 'Echec de l\'opération !' }));
 };
 
 exports.likesSauce = (req, res, next) => {
-    // const likes = Sauce.find({}).select('likes');
     let like = req.body.like;
     let userId = req.body.userId;
     let sauceId = req.params.id;
@@ -71,7 +70,7 @@ exports.likesSauce = (req, res, next) => {
                 }
             })
             .then(() => res.status(200).json({ message: 'L\'utilisateur à liké la sauce'}))
-            .catch(error => res.status(400).json({ error }));
+            .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
             break;
 
         case 0:
@@ -80,15 +79,15 @@ exports.likesSauce = (req, res, next) => {
                 if (Sauce.usersLiked.includes(userId)) {
                     Sauce.updateOne({_id:sauceId},{$pull: {usersLiked: userId}}, {$inc: {likes: -1}})
                     .then(() => res.status(200).json({ message: 'L\'utilisateur ne like plus cette sauce'}))
-                    .catch(error => res.status(400).json({ error }));
+                    .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
                 }
                 else if (Sauce.usersDisliked.includes(userId)) {
                     Sauce.updateOne({_id:sauceId},{$pull: {usersDisliked: userId}}, {$inc: {dislikes: -1}})
                     .then(() => res.status(200).json({ message: 'L\'utilisateur ne dislike plus cette sauce'}))
-                    .catch(error => res.status(400).json({ error }));
+                    .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
                 }
             })
-            .catch(error => res.status(400).json({ error }));
+            .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
             break;
 
         case -1:
@@ -101,7 +100,7 @@ exports.likesSauce = (req, res, next) => {
                     }
                 })
                 .then(() => res.status(200).json({ message: 'L\'utilisateur à disliké la sauce'}))
-                .catch(error => res.status(400).json({ error }));
+                .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
             break;
 
         default:

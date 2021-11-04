@@ -12,9 +12,9 @@ bcrypt.hash(req.body.password, 10)
     });
     user.save()
     .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-    .catch(error => res.status(400).json({error}));
+    .catch(error => res.status(400).json({error: 'Utilisateur non sauvegardé !'}));
 })
-.catch(error => res.status(500).json({error}));
+.catch(error => res.status(500).json({error: 'Echec de l\'inscription !'}));
 };
 
 exports.login = (req, res, next) => {
@@ -37,7 +37,7 @@ exports.login = (req, res, next) => {
           )
         });
       })
-      .catch(error => res.status(500).json({ error }));
+      .catch(error => res.status(500).json({ error: 'Problème lié à la connexion de l\'utilisateur !' }));
   })
-  .catch(error => res.status(500).json({ error }));
+  .catch(error => res.status(500).json({ error: 'Echec de l\'opération!' }));
 };
