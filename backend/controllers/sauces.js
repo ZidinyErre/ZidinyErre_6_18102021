@@ -60,12 +60,14 @@ exports.likesSauce = (req, res) => {
     let userId = req.body.userId;
     let sauceId = req.params.id;
     console.log(req.body);
+    console.log(like);
     switch (like) {
+
         case 1:
             Sauce.findOne({_id : sauceId})
             .then(Sauce => {
-                if (Sauce.dislikes >= 0 && Sauce.usersDisliked.includes(userId)) {
-                    Sauce.updateOne({_id:sauceId},{$push: {usersLiked: userId}}, {$inc: {likes: +1}}, {$pull: {usersDisliked: userId}}, {$inc: {likes: -1}})
+                if (Sauce.dislikes > 0 && Sauce.usersDisliked.includes(userId)) {
+                    Sauce.updateOne({_id:sauceId},{$push: {usersLiked: userId}}, {$inc: {likes: +1}}, {$pull: {usersDisliked: userId}}, {$inc: {dislikes: -1}})
                 } else {
                     Sauce.updateOne({_id:sauceId},{$push: {usersLiked: userId}}, {$inc: {likes: +1}})
                 }
@@ -77,12 +79,12 @@ exports.likesSauce = (req, res) => {
         case 0:
             Sauce.findOne({_id : sauceId})
             .then(Sauce =>{
-                if (Sauce.usersLiked.includes(userId)) {
+                if (Sauce.likes > 0 && Sauce.usersLiked.includes(userId)) {
                     Sauce.updateOne({_id:sauceId},{$pull: {usersLiked: userId}}, {$inc: {likes: -1}})
                     .then(() => res.status(200).json({ message: 'L\'utilisateur ne like plus cette sauce'}))
                     .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
                 }
-                else if (Sauce.usersDisliked.includes(userId)) {
+                else if (Sauce.dislikes > 0 && Sauce.usersDisliked.includes(userId)) {
                     Sauce.updateOne({_id:sauceId},{$pull: {usersDisliked: userId}}, {$inc: {dislikes: -1}})
                     .then(() => res.status(200).json({ message: 'L\'utilisateur ne dislike plus cette sauce'}))
                     .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
@@ -94,8 +96,8 @@ exports.likesSauce = (req, res) => {
         case -1:
             Sauce.findOne({_id : sauceId})
                 .then(Sauce => {
-                    if (Sauce.likes >= 0 && Sauce.usersLiked.includes(userId)) {
-                        Sauce.updateOne({_id:sauceId},{$push: {usersDisliked: userId}}, {$inc: {dislikes: +1}}, {$pull: {usersLiked: userId}}, {$inc: {dislikes: -1}})
+                    if (Sauce.likes > 0 && Sauce.usersLiked.includes(userId)) {
+                        Sauce.updateOne({_id:sauceId},{$push: {usersDisliked: userId}}, {$inc: {dislikes: +1}}, {$pull: {usersLiked: userId}}, {$inc: {likes: -1}})
                     } else {
                         Sauce.updateOne({_id:sauceId},{$push: {usersDisliked: userId}}, {$inc: {dislikes: +1}})
                     }
@@ -106,5 +108,97 @@ exports.likesSauce = (req, res) => {
 
         default:
             console.log(error);
+
+
+        // case 1:
+        //     Sauce.findOne({_id : sauceId})
+        //     .then(Sauce => {
+        //         if (Sauce.dislikes >= 0 && Sauce.usersDisliked.includes(userId)) {
+        //             Sauce.updateOne({_id:sauceId},{$push: {usersLiked: userId}}, {$inc: {likes: +1}}, {$pull: {usersDisliked: userId}}, {$inc: {dislikes: -1}})
+        //         } else if (Sauce.likes >= 0 && Sauce.usersLiked.includes(userId)){
+        //             Sauce.updateOne({_id:sauceId},{$push: {usersLiked: userId}}, {$inc: {likes: +1}})
+        //         }
+        //     })
+        //     .then(() => res.status(200).json({ message: 'L\'utilisateur à liké la sauce'}))
+        //     .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        //     break;
+
+        //     // Sauce.findOne({_id : sauceId})
+        //     // .then(Sauce => {
+        //     //     if (Sauce.dislikes >= 0 && Sauce.usersDisliked.includes(userId)) {
+        //     //         Sauce.updateOne({_id:sauceId},{$push: {usersLiked: userId}}, {$inc: {likes: +1}}, {$pull: {usersDisliked: userId}}, {$inc: {likes: -1}})
+        //     //     } else {
+        //     //         Sauce.updateOne({_id:sauceId},{$push: {usersLiked: userId}}, {$inc: {likes: +1}})
+        //     //     }
+        //     // })
+        //     // .then(() => res.status(200).json({ message: 'L\'utilisateur à liké la sauce'}))
+        //     // .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        //     // break;
+
+        //     case 0:
+        //         Sauce.findOne({_id : sauceId})
+        //         .then(Sauce =>{
+        //             if (Sauce.likes >= Sauce.usersLiked.includes(userId)) {
+        //                 Sauce.updateOne({_id:sauceId},{$pull: {usersLiked: userId}}, {$inc: {likes: -1}})
+        //                 .then(() => res.status(200).json({ message: 'L\'utilisateur ne like plus cette sauce'}))
+        //                 .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        //             }
+        //             else if (Sauce.dislikes >= 0 && Sauce.usersDisliked.includes(userId)) {
+        //                 Sauce.updateOne({_id:sauceId},{$pull: {usersDisliked: userId}}, {$inc: {dislikes: -1}})
+        //                 .then(() => res.status(200).json({ message: 'L\'utilisateur ne dislike plus cette sauce'}))
+        //                 .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        //             }
+        //         })
+        //         .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        //         break;
+            
+        
+        
+        
+        // // Sauce.findOne({_id : sauceId})
+        // //     .then(Sauce =>{
+        // //         if (Sauce.usersLiked.includes(userId)) {
+        // //             Sauce.updateOne({_id:sauceId},{$pull: {usersLiked: userId}}, {$inc: {likes: -1}})
+        // //             .then(() => res.status(200).json({ message: 'L\'utilisateur ne like plus cette sauce'}))
+        // //             .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        // //         }
+        // //         else if (Sauce.usersDisliked.includes(userId)) {
+        // //             Sauce.updateOne({_id:sauceId},{$pull: {usersDisliked: userId}}, {$inc: {dislikes: -1}})
+        // //             .then(() => res.status(200).json({ message: 'L\'utilisateur ne dislike plus cette sauce'}))
+        // //             .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        // //         }
+        // //     })
+        // //     .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        // //     break;
+
+        // case -1:
+        //     Sauce.findOne({_id : sauceId})
+        //         .then(Sauce => {
+        //             if (Sauce.likes >= 0 && Sauce.usersLiked.includes(userId)) {
+        //                 Sauce.updateOne({_id:sauceId},{$push: {usersDisliked: userId}}, {$inc: {dislikes: +1}}, {$pull: {usersLiked: userId}}, {$inc: {likes: -1}})
+        //             } else if (Sauce.dislikes == 0 || !Sauce.usersDisliked.include(userId)) {
+        //                 Sauce.updateOne({_id:sauceId},{$push: {usersDisliked: userId}}, {$inc: {dislikes: +1}})
+        //             }
+        //         })
+        //         .then(() => res.status(200).json({ message: 'L\'utilisateur à disliké la sauce'}))
+        //         .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        //     break;
+
+
+
+        //     // Sauce.findOne({_id : sauceId})
+        //     //     .then(Sauce => {
+        //     //         if (Sauce.likes >= 0 && Sauce.usersLiked.includes(userId)) {
+        //     //             Sauce.updateOne({_id:sauceId},{$push: {usersDisliked: userId}}, {$inc: {dislikes: +1}}, {$pull: {usersLiked: userId}}, {$inc: {dislikes: -1}})
+        //     //         } else {
+        //     //             Sauce.updateOne({_id:sauceId},{$push: {usersDisliked: userId}}, {$inc: {dislikes: +1}})
+        //     //         }
+        //     //     })
+        //     //     .then(() => res.status(200).json({ message: 'L\'utilisateur à disliké la sauce'}))
+        //     //     .catch(error => res.status(400).json({ error: 'Echec de l\'opération !' }));
+        //     // break;
+
+        // default:
+        //     console.log(error);
     }
 };
