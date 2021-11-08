@@ -2,20 +2,20 @@ const Sauce = require('../models/Sauce');
 const fs = require('fs');
 
 
-exports.getAllSauce = (req, res, next) => {
+exports.getAllSauce = (req, res) => {
     Sauce.find()
     .then(sauces => res.status(200).json(sauces))
     .catch(error => res.status(400).json({error: 'Sauces non trouvé !'}));
 };
 
-exports.getOneSauce = (req, res, next) => {
+exports.getOneSauce = (req, res) => {
     Sauce.findOne({_id : req.params.id})
-    .then(sauces => res.status(200).json(sauces))
+    .then(sauce => res.status(200).json(sauce))
     .catch(error => res.status(404).json({error: 'Sauce non trouvé !'}));
 };
 
-exports.createSauce = (req, res, next) => {
-    const sauceObject = JSON.parse(req.body.sauces);
+exports.createSauce = (req, res) => {
+    const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
     const sauce = new Sauce({
         ...sauceObject,
@@ -23,14 +23,14 @@ exports.createSauce = (req, res, next) => {
         likes: 0,
         dislikes: 0,
         usersLiked: [],
-        usersDisliked: [],
+        usersDisliked: []
     });
     sauce.save()
     .then(() => res.status(201).json({message : 'Objet enregistré !'}))
     .catch(error => res.status(400).json({error: 'Objet non enregistré !'}));
 };
 
-exports.modifySauce = (req, res, next) => {
+exports.modifySauce = (req, res) => {
     const sauceObject = req.file ?
     {
         ...JSON.parse(req.body.sauces),
@@ -42,7 +42,7 @@ exports.modifySauce = (req, res, next) => {
 
 };
 
-exports.deleteSauce = (req, res, next) => {
+exports.deleteSauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
     .then(sauce => {
         const filename = sauce.imageUrl.split('/images/')[1];
@@ -55,10 +55,11 @@ exports.deleteSauce = (req, res, next) => {
     .catch(error => res.status(500).json({ error: 'Echec de l\'opération !' }));
 };
 
-exports.likesSauce = (req, res, next) => {
+exports.likesSauce = (req, res) => {
     let like = req.body.like;
     let userId = req.body.userId;
     let sauceId = req.params.id;
+    console.log(req.body);
     switch (like) {
         case 1:
             Sauce.findOne({_id : sauceId})
@@ -104,6 +105,6 @@ exports.likesSauce = (req, res, next) => {
             break;
 
         default:
-            break;
+            console.log(error);
     }
 };
