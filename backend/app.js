@@ -1,8 +1,15 @@
 const express = require('express');
 const helmet = require('helmet');
+
+const rateLimit = require('express-rate-limit');
+
+
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
+
+
+
 
 const userRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauces');
@@ -15,6 +22,12 @@ mongoose.connect('mongodb+srv://BruceWillis:billyboY44@thecluster.caibu.mongodb.
 
 
 app.use(helmet());
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,    // 15 minutes
+    max: 100                     // 100 requests per IP
+});
+app.use(limiter);
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
