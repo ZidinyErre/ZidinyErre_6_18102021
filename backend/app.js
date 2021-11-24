@@ -1,33 +1,29 @@
 const express = require('express');
 const helmet = require('helmet');
-
 const rateLimit = require('express-rate-limit');
-
-
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
-
-
-
 
 const userRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauces');
 
 mongoose.connect('mongodb+srv://BruceWillis:billyboY44@thecluster.caibu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
-    { useNewUrlParser: true,
-        useUnifiedTopology: true })
+{ useNewUrlParser: true,
+useUnifiedTopology: true })
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 
 app.use(helmet());
 
+
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000,    // 15 minutes
     max: 100                     // 100 requests per IP
 });
 app.use(limiter);
+
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -36,14 +32,12 @@ app.use((req, res, next) => {
     
     next();
 });
-
 app.options('/*', (_, res) => {
     res.sendStatus(200);
 });
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(express.static('images'));
-
 
 app.use(express.urlencoded({ extended : true}));
 app.use(express.json());

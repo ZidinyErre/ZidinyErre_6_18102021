@@ -5,7 +5,7 @@ require('dotenv').config();
 
 exports.signup = (req, res) => {
   bcrypt.hash(req.body.password, 10)
-  .then(hash => {
+    .then(hash => {
       const user = new User({
           email: req.body.email,
           password: hash
@@ -13,16 +13,16 @@ exports.signup = (req, res) => {
       user.save()
       .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
       .catch(error => res.status(400).json({error: 'Utilisateur non sauvegardé ! L email est probablement déjà utilisé!'}));
-  })
-  .catch(error => res.status(500).json({error: 'Echec de l\'inscription !'}));
+    })
+    .catch(error => res.status(500).json({error: 'Echec de l\'inscription !'}));
 };
 
 exports.login = (req, res) => {
   User.findOne({email: req.body.email})
-.then(user => {
-    if (!user) {
-      return res.status(401).json({ error: 'Utilisateur non trouvé !' });
-    }
+    .then(user => {
+        if (!user) {
+          return res.status(401).json({ error: 'Utilisateur non trouvé !' });
+        }
     bcrypt.compare(req.body.password, user.password)
       .then(valid => {
         if (!valid) {
@@ -38,6 +38,6 @@ exports.login = (req, res) => {
         });
       })
       .catch(error => res.status(500).json({ error: 'Problème lié à la connexion de l\'utilisateur !' }));
-  })
-  .catch(error => res.status(500).json({ error: 'Echec de l\'opération!' }));
+    })
+    .catch(error => res.status(500).json({ error: 'Echec de l\'opération!' }));
 };
