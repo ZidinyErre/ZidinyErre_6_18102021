@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+// Schéma qui permet un bon fonctionnement du côté de la base de donnée 
+
 const sauceSchema = mongoose.Schema({
     userId : {type: String , require : true},
     name : {type: String , require : true},

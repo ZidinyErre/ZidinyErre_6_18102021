@@ -1,5 +1,5 @@
 const passwordValidator = require('password-validator');
-
+// Middleware qui va demander un mots de passe puissant lors de l'inscription
 const passwordSchema = new passwordValidator();
 
 passwordSchema

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
-
+// Middleware qui va permettre d'authentifié l'utilisateur et de le permettre d'agir ou non
 module.exports = (req, res, next) => {
     try{
         const token = req.headers.authorization.split(' ')[1];

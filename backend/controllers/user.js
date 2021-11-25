@@ -2,7 +2,7 @@ const bcrypt = require ('bcrypt');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
-
+// Controller pour l'inscription
 exports.signup = (req, res) => {
   bcrypt.hash(req.body.password, 10)
     .then(hash => {
@@ -17,6 +17,7 @@ exports.signup = (req, res) => {
     .catch(error => res.status(500).json({error: 'Echec de l\'inscription !'}));
 };
 
+// Controller pour la connexion
 exports.login = (req, res) => {
   User.findOne({email: req.body.email})
     .then(user => {
