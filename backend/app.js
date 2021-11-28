@@ -4,9 +4,9 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const path = require('path');
 const app = express();
-
 const userRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauces');
+
 // Liaison entre la base de donnée et le serveur
 mongoose.connect('mongodb+srv://BruceWillis:billyboY44@thecluster.caibu.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
 { useNewUrlParser: true,
@@ -19,7 +19,7 @@ app.use(helmet());
 
 // Empêche les attaques de force brut 
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000,    // 15 minutes
+    windowMs: 40 * 60 * 1000,    // 15 minutes
     max: 100                     // 100 requests per IP
 });
 app.use(limiter);
