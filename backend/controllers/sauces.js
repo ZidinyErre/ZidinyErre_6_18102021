@@ -33,7 +33,7 @@ exports.createSauce = (req, res) => {
 exports.modifySauce = (req, res) => {
     const sauceObject = req.file ?
     {
-        ...JSON.parse(req.body.sauces),
+        ...JSON.parse(req.body.sauce),
         imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     } : { ...req.body};
     Sauce.updateOne({_id: req.params.id},{ ...sauceObject, _id: req.params.id})
